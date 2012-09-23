@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv) {
   FILE *input_file;
-  dictionary_entry dictionary[4096];
+  dictionary_t dict;
 
   if(argc < 2) {
     printf("Usage.\n");
