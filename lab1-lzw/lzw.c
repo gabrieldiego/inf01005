@@ -1,4 +1,5 @@
 /* Grupo 3: Rafael / Gabriel Teixeira */
+#include "lzw.h"
 
 #define VEC_SIZE 256
 

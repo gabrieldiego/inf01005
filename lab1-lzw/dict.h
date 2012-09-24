@@ -1,5 +1,8 @@
 #include <stdint.h>
 
+#ifndef __DICT_H__
+#define __DICT_H__
+
 typedef struct dictionary_entry_s {
   size_t len;
   uint16_t prefix; // If len == 1, prefix is 0
@@ -22,3 +25,5 @@ int search_in_dictionary(
   size_t code_word_size,
   dictionary_t *dict
 );
+
+#endif /* __DICT_H__ */
