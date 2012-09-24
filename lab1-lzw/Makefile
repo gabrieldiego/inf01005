@@ -1,13 +1,22 @@
+CDFLAGS=-MM -MF $@ -MP -MT
+
+SRC=$(shell ls *.c)
+DEP=$(subst .c,.d,$(SRC))
+OBJ=$(subst .c,.o,$(SRC))
+
 all: encoder
 
-encoder: encoder.o lzw.o dict.o
-	gcc -o encoder $^
+encoder: $(OBJ)
+	$(CC) -o encoder $^
 
-encoder.o: lzw.h
+-include $(DEP)
 
-lzw.o: lzw.h dict.h
+%.d: %.c
+	$(CC) $(CDFLAGS) $(subst .c,.o,$<) $<
 
-dict.o: dict.h
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 
 clean:
-	rm -rf *.o encoder
+	rm -rf $(DEP) $(OBJ) encoder
