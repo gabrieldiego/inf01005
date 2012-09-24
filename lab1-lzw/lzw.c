@@ -1,31 +1,25 @@
 /* Grupo 3: Rafael / Gabriel Teixeira */
 #include "lzw.h"
 
-#define VEC_SIZE 256
+void init_lzw_encoder(lzw_enc_t *encoder_ctx, char first_char) {
+  encoder_ctx->current_prefix = first_char;
+}
 
-static char *alloc_vector = NULL;
-static size_t alloc_vector_pos;
+void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
+  uint16_t codeword;
 
-char *alloc_bytes(size_t count) {
-  char return_vector;
+  /* Search the dict for the current prefix + input_char */
+  codeword = search_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
 
-  if(alloc_vector == NULL || (VEC_SIZE - alloc_vector_pos < count)) {
-    alloc_vector = malloc(VEC_SIZE);
-    if(alloc_vector == NULL) {
-      exit(-1);
-    }
-    alloc_vector_pos = 0;
-  }
-
-  if(count > VEC_SIZE) {
-
-    return_vector = alloc_vector + alloc_vector_pos;
-
-    alloc_vector_pos += count;
-
-    return return_vector;
+  if(codeword != DICT_NOT_FOUND) {
+	/* If found in dictionary, save the current prefix */
+	encoder_ctx->current_prefix = codeword;
+  } else {
+	/* If not found, add it to the dictionary. Remember that at this point the
+	    dictionary may be resetted, but this changes nothing */
+	insert_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
+	printf("Output codeword: 0x%04X\n",encoder_ctx->current_prefix);
   }
 }
 
 /* Clear dictionary once it is full */
-

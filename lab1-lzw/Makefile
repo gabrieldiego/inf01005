@@ -17,6 +17,5 @@ encoder: $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-
 clean:
 	rm -rf $(DEP) $(OBJ) encoder

@@ -6,6 +6,8 @@
 
 #define DICT_MAX_SIZE 4096
 
+#define DICT_NOT_FOUND 0xFFFF
+
 typedef struct dictionary_entry_s {
   size_t len;
   uint16_t prefix; // If len == 1, prefix is void (single char)
@@ -25,7 +27,7 @@ void insert_in_dictionary(
   dictionary_t *dict
 );
 
-int search_in_dictionary(
+uint16_t search_in_dictionary(
   uint16_t prefix,
   uint8_t append,
   dictionary_t *dict

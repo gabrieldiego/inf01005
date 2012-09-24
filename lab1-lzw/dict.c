@@ -20,7 +20,7 @@ void insert_in_dictionary(
   uint16_t dict_pos = dict->size;
 
   if(dict->size == DICT_MAX_SIZE) {
-    printf("Dictionary reseted due to oversize.");
+    printf("Dictionary reseted due to oversize.\n");
     init_dict(dict);
   } else {
 	dict->entry[dict_pos].append = append;
@@ -31,7 +31,7 @@ void insert_in_dictionary(
   }
 }
 
-int search_in_dictionary(
+uint16_t search_in_dictionary(
   uint16_t prefix,
   uint8_t append,
   dictionary_t *dict
@@ -47,14 +47,12 @@ int search_in_dictionary(
 
   for(i=prefix+1; i<dict->size; i++) {
 	/* Search starting after the position of the prefix */
-    if((dict->prefix == prefix) && (dict->append == append)) {
+    if((dict->entry[i].prefix == prefix) && (dict->entry[i].append == append)) {
 	  /* If found a matching entry returns the position */
 	  return i;
 	}
   }
 
-  /* If nothing is found returns 0 */
-  /* If the position found was 0, returns 0 too, but this function is not
-      supposed to search by a entry of length 1 (and in the position 0 ) */
-  return 0;
+  /* If nothing is found returns DICT_NOT_FOUND */
+  return DICT_NOT_FOUND;
 }
