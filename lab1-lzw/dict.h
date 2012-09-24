@@ -1,7 +1,8 @@
-#include <stdint.h>
-
 #ifndef __DICT_H__
 #define __DICT_H__
+
+#include <stdint.h>
+#include <stdlib.h>
 
 typedef struct dictionary_entry_s {
   size_t len;
