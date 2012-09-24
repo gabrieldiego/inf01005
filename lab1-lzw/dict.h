@@ -4,26 +4,30 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define DICT_MAX_SIZE 4096
+
 typedef struct dictionary_entry_s {
   size_t len;
-  uint16_t prefix; // If len == 1, prefix is 0
+  uint16_t prefix; // If len == 1, prefix is void (single char)
   uint8_t append;
 } dictionary_entry_t;
 
 typedef struct dictionary_s {
-  dictionary_entry_t entry[4096];
-  uint16_t ditc_size;
+  dictionary_entry_t entry[DICT_MAX_SIZE];
+  uint16_t size;
 } dictionary_t;
 
+void init_dict(dictionary_t *dict);
+
 void insert_in_dictionary(
-  char *code_word,
-  size_t code_word_size,
+  uint16_t prefix,
+  uint8_t append,
   dictionary_t *dict
 );
 
 int search_in_dictionary(
-  char *code_word,
-  size_t code_word_size,
+  uint16_t prefix,
+  uint8_t append,
   dictionary_t *dict
 );
 
