@@ -9,3 +9,5 @@ encoder.o: lzw.h
 lzw.o: lzw.h
 	gcc -c lzw.c
 
+clean:
+	rm -rf *.o encoder
