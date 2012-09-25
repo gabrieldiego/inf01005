@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include "lzw.h"
 
+void print_output_codeword(uint16_t *codeword) {
+  printf("Output codeword: 0x%04X\n",codeword);
+}
+
 int main(int argc, char **argv) {
   FILE *input_file;
   dictionary_t dict;
@@ -23,7 +27,7 @@ int main(int argc, char **argv) {
 
   char_input = fgetc(input_file);
   if(char_input != EOF) {
-	init_lzw_encoder(&encoder,char_input);
+	init_lzw_encoder(&encoder,char_input,print_output_codeword);
   }
 
   char_input = fgetc(input_file);
@@ -32,6 +36,8 @@ int main(int argc, char **argv) {
 	insert_char(&encoder,&dict,char_input);
 	char_input = fgetc(input_file);
   }
+
+  output_last_codeword(&encoder);
 
   return 0;
 }
