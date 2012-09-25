@@ -41,7 +41,7 @@ uint16_t search_in_dictionary(
   /* Remember that a prefix entry must always come before the appended one
       Ex: AAB is always before AABB */
 
-  if(prefix+1 == dict->size) return 0;
+  if(prefix+1 == dict->size) return DICT_NOT_FOUND;
   /* If the prefix is the last entry in the dictionary, there are no possible
       further entries (see comment above) */
 
