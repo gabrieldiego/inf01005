@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "dict.h"
 
 typedef struct lzw_enc_s {
