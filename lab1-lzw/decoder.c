@@ -10,7 +10,7 @@ uint16_t read_from_file() {
 
   if(!init) {
     input_file = fopen("output.lzw","rb");
-	if(!output_file) {
+	if(!input_file) {
 	  return;
 	}
 	init = 1;
@@ -54,7 +54,23 @@ uint16_t read_from_file() {
 	nibble_avail = 1;
   }
 
+  printf("Read codeword 0x%3X\n",codeword);
+
   return codeword;
+
+}
+
+void output_to_file(char output_char) {
+  static FILE *output_file=NULL;
+
+  if(output_file == NULL) {
+    output_file = fopen("output.txt","rb");
+	if(!output_file) {
+	  return;
+	}
+  }
+
+  fputc(output_char,output_file);
 
 }
 
@@ -77,20 +93,9 @@ int main(int argc, char **argv) {
 
   init_dict(&dict);
 
-  char_input = fgetc(input_file);
-  if(char_input != EOF) {
-	init_lzw_decoder(&encoder,write_to_file);
-  }
+  init_lzw_decoder(&decoder,read_from_file,output_to_file);
 
-  char_input = fgetc(input_file);
+  decode_file(&decoder,&dict);
 
-  while(char_input != EOF) {
-	insert_char(&encoder,&dict,char_input);
-	char_input = fgetc(input_file);
-  }
-
-  output_last_codeword(&encoder);
-
-  write_to_file(0xFFFF);
   return 0;
 }

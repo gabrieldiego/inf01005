@@ -35,19 +35,20 @@ void output_last_codeword(lzw_enc_t *encoder_ctx) {
 /* Clear dictionary once it is full */
 
 void init_lzw_decoder(
-  lzw_enc_t *decoder_ctx,
-  uint16_t (*input_func)(void)
+  lzw_dec_t *decoder_ctx,
+  uint16_t (*input_func)(void),
+  void (*output_func)(char)
 ) {
   decoder_ctx->current_prefix = 0;
-  decoder_ctx->output_func = input_func;
+  decoder_ctx->input_func = input_func;
+  decoder_ctx->output_func=output_func;
 }
 
-char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict) {
+size_t decode_file(lzw_dec_t *decoder_ctx, dictionary_t *dict) {
   uint16_t codeword;
-
+#if 0
   /* Search the dict for the current prefix + input_char */
   codeword = search_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
-
   if(codeword != DICT_NOT_FOUND) {
 	/* If found in dictionary, save the current prefix and continues */
 	encoder_ctx->current_prefix = codeword;
@@ -58,4 +59,5 @@ char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict) {
 	encoder_ctx->output_func(encoder_ctx->current_prefix);
 	encoder_ctx->current_prefix = input_char;
   }
+#endif
 }
