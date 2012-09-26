@@ -60,7 +60,7 @@ uint16_t read_from_file() {
 
 }
 
-void output_to_file(char output_char) {
+void output_to_file(uint8_t output_char) {
   static FILE *output_file=NULL;
 
   if(output_file == NULL) {
@@ -78,7 +78,6 @@ int main(int argc, char **argv) {
   FILE *input_file;
   dictionary_t dict;
   lzw_dec_t decoder;
-  char char_output;
 
   if(argc < 2) {
     printf("Usage.\n");

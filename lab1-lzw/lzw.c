@@ -37,15 +37,35 @@ void output_last_codeword(lzw_enc_t *encoder_ctx) {
 void init_lzw_decoder(
   lzw_dec_t *decoder_ctx,
   uint16_t (*input_func)(void),
-  void (*output_func)(char)
+  void (*output_func)(uint8_t)
 ) {
-  decoder_ctx->current_prefix = 0;
   decoder_ctx->input_func = input_func;
   decoder_ctx->output_func=output_func;
+
+  decoder_ctx->previous_codeword = decoder_ctx->input_func();
+
+  if(decoder_ctx->previous_codeword == 0xFFFF) {
+	/* Probably means empty or inexisting file */
+    return;
+  }
+
+  decoder_ctx->output_func(decoder_ctx->previous_codeword);
+
+  decoder_ctx->last_char = decoder_ctx->previous_codeword;
 }
 
 size_t decode_file(lzw_dec_t *decoder_ctx, dictionary_t *dict) {
-  uint16_t codeword;
+  uint16_t current_codeword;
+
+  /* Take one codeword from file for analisys */
+  current_codeword = decoder_ctx->input_func();
+
+  while(codeword != 0xFFFF) {
+	
+
+	current_codeword = decoder_ctx->input_func();
+  }
+
 #if 0
   /* Search the dict for the current prefix + input_char */
   codeword = search_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
@@ -60,4 +80,11 @@ size_t decode_file(lzw_dec_t *decoder_ctx, dictionary_t *dict) {
 	encoder_ctx->current_prefix = input_char;
   }
 #endif
+}
+
+void output_cw_rec(lzw_dec_t *decoder_ctx, dict_t *dict, uint16_t codeword) {
+  if(dict->entry[codeword].len>1) {
+	output_cw_rec(dict,dict->entry[codeword].prefix)
+  }
+  decoder_ctx->output_func(dict->entry[codeword].append);
 }

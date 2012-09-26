@@ -15,9 +15,10 @@ typedef struct lzw_enc_s {
 } lzw_enc_t;
 
 typedef struct lzw_dec_s {
-  uint16_t current_prefix;
+  uint16_t previous_codeword;
+  char last_char;
   uint16_t (*input_func)(void);
-  void (*output_func)(char);
+  void (*output_func)(uint8_t);
 } lzw_dec_t;
 
 void init_lzw_encoder(
@@ -36,7 +37,7 @@ char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict);
 void init_lzw_decoder(
   lzw_dec_t *decoder_ctx,
   uint16_t (*input_func)(void),
-  void (*output_func)(char)
+  void (*output_func)(uint8_t)
 );
 
 size_t decode_file(lzw_dec_t *encoder_ctx, dictionary_t *dict);
