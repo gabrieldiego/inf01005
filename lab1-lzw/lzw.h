@@ -14,6 +14,11 @@ typedef struct lzw_enc_s {
   void (*output_func)(uint16_t);
 } lzw_enc_t;
 
+typedef struct lzw_dec_s {
+  uint16_t current_prefix;
+  void (*input_func)(uint16_t);
+} lzw_dec_t;
+
 void init_lzw_encoder(
   lzw_enc_t *encoder_ctx,
   char first_char,
@@ -23,5 +28,7 @@ void init_lzw_encoder(
 void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char);
 
 void output_last_codeword(lzw_enc_t *encoder_ctx);
+
+char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict);
 
 #endif /* __LZW_H__ */

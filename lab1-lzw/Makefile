@@ -4,7 +4,7 @@ SRC=$(shell ls *.c)
 DEP=$(subst .c,.d,$(SRC))
 OBJ=$(subst .c,.o,$(SRC))
 
-all: encoder
+all: encoder decoder
 
 encoder: $(OBJ)
 	$(CC) -o encoder $^

@@ -33,3 +33,29 @@ void output_last_codeword(lzw_enc_t *encoder_ctx) {
 }
 
 /* Clear dictionary once it is full */
+
+void init_lzw_decoder(
+  lzw_enc_t *decoder_ctx,
+  uint16_t (*input_func)(void)
+) {
+  decoder_ctx->current_prefix = 0;
+  decoder_ctx->output_func = input_func;
+}
+
+char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict) {
+  uint16_t codeword;
+
+  /* Search the dict for the current prefix + input_char */
+  codeword = search_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
+
+  if(codeword != DICT_NOT_FOUND) {
+	/* If found in dictionary, save the current prefix and continues */
+	encoder_ctx->current_prefix = codeword;
+  } else {
+	/* If not found, add it to the dictionary. Remember that at this point the
+	    dictionary may be resetted, but this changes nothing */
+	insert_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
+	encoder_ctx->output_func(encoder_ctx->current_prefix);
+	encoder_ctx->current_prefix = input_char;
+  }
+}
