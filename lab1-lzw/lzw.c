@@ -60,9 +60,7 @@ size_t decode_file(lzw_dec_t *decoder_ctx, dictionary_t *dict) {
   /* Take one codeword from file for analisys */
   current_codeword = decoder_ctx->input_func();
 
-  while(codeword != 0xFFFF) {
-	
-
+  while(current_codeword != 0xFFFF) {
 	current_codeword = decoder_ctx->input_func();
   }
 
@@ -82,9 +80,10 @@ size_t decode_file(lzw_dec_t *decoder_ctx, dictionary_t *dict) {
 #endif
 }
 
-void output_cw_rec(lzw_dec_t *decoder_ctx, dict_t *dict, uint16_t codeword) {
+/* Outputs the codeword string recursivelly */
+void output_cw_rec(lzw_dec_t *decoder_ctx, dictionary_t *dict, uint16_t codeword) {
   if(dict->entry[codeword].len>1) {
-	output_cw_rec(dict,dict->entry[codeword].prefix)
+	output_cw_rec(decoder_ctx,dict,dict->entry[codeword].prefix);
   }
   decoder_ctx->output_func(dict->entry[codeword].append);
 }
