@@ -90,7 +90,11 @@ int main(int argc, char **argv) {
     printf("Error opening input file %s.\n",argv[1]);
   }
 
-  init_dict(&dict);
+  if(argc >= 3) {
+	init_dict(&dict,argv[2]);
+  } else {
+	init_dict(&dict,NULL);
+  }
 
   init_lzw_decoder(&decoder,read_from_file,output_to_file);
 

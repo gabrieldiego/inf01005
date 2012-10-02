@@ -1,15 +1,51 @@
 #include "dict.h"
 
-void init_dict(dictionary_t *dict) {
+int init_dict(dictionary_t *dict, char *input_dict) {
   int i;
 
-  for(i=0; i<256; i++) {
-    dict->entry[i].append = i;
-    dict->entry[i].prefix = 0;
-    dict->entry[i].len = 1;
+  dict->file_name = input_dict;
+
+  dict->size = 0;
+
+  if(input_dict != NULL) {
+	FILE *input_dict_file;
+	char atribute;
+	int value;
+	input_dict_file = fopen(input_dict,"r");
+
+	if(input_dict_file == NULL) {
+	  fprintf(stderr,"Could not open dictionary file %s.\n",input_dict);
+	  return -1;
+	}
+
+	while (!feof(input_dict_file)) {
+	  if (fscanf(input_dict_file,"%c%*c%d",&atribute,&value) != 2) continue;
+	  if(value>dict->size) {
+		for(i=dict->size;i<value;i++) {
+		  /* It is adding a character past the dict size, reset entries before */
+		  dict->entry[i].append = 0;
+		  dict->entry[i].prefix = 0;
+		  dict->entry[i].len = 1;
+		  dict->size = value+1;
+		}
+	  }
+	  dict->entry[value].append = atribute;
+	  dict->entry[value].prefix = 0;
+	  dict->entry[value].len = 1;
+	  dict->size = dict->size>value ? dict->size : value+1;
+	}
+
+  } else {
+	/* If there is no input dictionary, use ASCII table as input */
+	for(i=0; i<256; i++) {
+	  dict->entry[i].append = i;
+	  dict->entry[i].prefix = 0;
+	  dict->entry[i].len = 1;
+	}
+	dict->size = 256;
   }
 
-  dict->size = 256;
+  return 0;
 }
 
 void insert_in_dictionary(
@@ -21,7 +57,7 @@ void insert_in_dictionary(
 
   if(dict->size == DICT_MAX_SIZE) {
     printf("Dictionary reseted due to oversize.\n");
-    init_dict(dict);
+    init_dict(dict,dict->file_name);
   } else {
 	dict->entry[dict_pos].append = append;
 	dict->entry[dict_pos].prefix = prefix;
