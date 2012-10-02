@@ -19,7 +19,7 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 	}
 
 	while (!feof(input_dict_file)) {
-	  if (fscanf(input_dict_file,"%c%*c%d",&atribute,&value) != 2) continue;
+	  if (fscanf(input_dict_file,"%c:%d\n",&atribute,&value) != 2) continue;
 	  if(value>dict->size) {
 		for(i=dict->size;i<value;i++) {
 		  /* It is adding a character past the dict size, reset entries before */
