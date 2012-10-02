@@ -35,4 +35,6 @@ uint16_t search_in_dictionary(
   dictionary_t *dict
 );
 
+void write_dict_to_file(FILE *out_file, dictionary_t *dict);
+
 #endif /* __DICT_H__ */

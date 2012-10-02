@@ -62,7 +62,7 @@ void insert_in_dictionary(
 	dict->entry[dict_pos].append = append;
 	dict->entry[dict_pos].prefix = prefix;
 	dict->entry[dict_pos].len = dict->entry[prefix].len+1;
-	/* The resulting lenght if 1 more of the prefix */
+	/* The resulting length if 1 more of the prefix */
 	dict->size++;
   }
 }
@@ -91,4 +91,23 @@ uint16_t search_in_dictionary(
 
   /* If nothing is found returns DICT_NOT_FOUND */
   return DICT_NOT_FOUND;
+}
+
+void write_codeword_to_file_rec(
+  FILE *out_file,
+  dictionary_t *dict,
+  uint16_t entry
+) {
+  if(dict->entry[entry].len!=1) {
+	write_codeword_to_file_rec(out_file,dict,dict->entry[entry].prefix);
+  }
+  fprintf(out_file,"%c",dict->entry[entry].append);
+}
+
+void write_dict_to_file(FILE *out_file, dictionary_t *dict) {
+  int i;
+  for(i=0;i<dict->size;i++) {
+	write_codeword_to_file_rec(out_file,dict,i);
+	fprintf(out_file,":%d\n",i);
+  }
 }
