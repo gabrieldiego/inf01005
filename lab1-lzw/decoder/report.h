@@ -5,5 +5,6 @@
 
 char output_filename[256];
 char report_filename[256];
+char input_filename[256];
 
 void report_generate(char *file_in, char *file_out);

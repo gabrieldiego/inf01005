@@ -71,7 +71,9 @@ int main(int argc, char **argv) {
     
   filename=get_filename(argv[1]);
   
-  printf("filename (%s)\n",filename);
+  //printf("filename (%s)\n",filename);
+
+  strcpy(input_filename,argv[1]);
   
   strcpy(output_filename,filename);
   strcat(output_filename,".dout");
@@ -197,7 +199,7 @@ int main(int argc, char **argv) {
 
   printf("\ngroup number: %d\n",nrGroup);  
   printf("code length: %d\n",length); 
-  close(output_file); 
+  fclose(output_file); 
 
   report_generate(argv[1],"output.dout");
   return 0;
