@@ -93,15 +93,18 @@ void write_to_file_ascii(uint16_t codeword, void *ptr) {
 	/* Finish writing the file anyways */
 	codeword = 0xFFFF;
   } else {
-	/* If no overflow is expected, increase the number of bits */
-	ctx->bits_encoded += 12;
+	if(codeword != 0xFFFF) {
+	  /* If no overflow is expected, increase the number of bits */
+	  ctx->bits_encoded += 12;
+	}
   }
 
   if(codeword == 0xFFFF) {
 	/* This codeword is to close the output file */
-	
+	fseek(ctx->output_file,1,SEEK_SET);
+
 	/* Keep in mind that this overflows after 256 */
-	fputc('a', ctx->output_file);
+	fputc(ctx->bits_encoded, ctx->output_file);
 
 	fclose(ctx->output_file);
 	return;
@@ -177,7 +180,7 @@ int main(int argc, char **argv) {
   output_last_codeword(&encoder);
 
 #ifdef ENCODE_IN_ASCII
-  write_to_file(0xFFFF,&write_to_file_ascii_ctx);
+  write_to_file_ascii(0xFFFF,&write_to_file_ascii_ctx);
 #else /* ENCODE_IN_ASCII */
   write_to_file(0xFFFF,&write_to_file_ctx);
 #endif /* ENCODE_IN_ASCII */
