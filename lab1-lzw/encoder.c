@@ -6,42 +6,52 @@ void print_output_codeword(uint16_t codeword) {
   printf("Output codeword: 0x%04X\n",codeword);
 }
 
-void write_to_file(uint16_t codeword) {
-  static uint8_t init = 0;
-  static FILE *output_file;
-  static uint8_t nibble,nibble_avail=0;
+typedef struct write_to_file_s {
+  char *output_file_name;
+  FILE *output_file;
+  uint8_t nibble;
+  uint8_t nibble_avail;
+} write_to_file_t;
 
-  if(!init) {
-    output_file = fopen("output.lzw","wb");
-	if(!output_file) {
-	  return;
-	}
-	init = 1;
+int init_write_to_file(write_to_file_t *ctx, char *output_file_name) {
+  ctx->output_file_name = output_file_name;
+  ctx->output_file = fopen(ctx->output_file_name,"wb");
+  if(!ctx->output_file) {
+	fprintf(stderr,"Error while opening %s\n",ctx->output_file_name);
+	return -1;
   }
 
-  if(nibble_avail) {
+  ctx->nibble_avail = 0;
+
+  return 0;
+
+}
+
+void write_to_file(uint16_t codeword, void *ptr) {
+  write_to_file_t *ctx = (write_to_file_t *)ptr;
+
+  if(ctx->nibble_avail) {
 	if(codeword == 0xFFFF) {
-	  fputc(((nibble&0xF) << 4), output_file);
-	  fclose(output_file);
-	  init=0;
+	  /* This codeword is to close the output file */
+	  fputc(((ctx->nibble&0xF) << 4), ctx->output_file);
+	  fclose(ctx->output_file);
 	  return;
 	}
 
-	fputc(((nibble&0xF) << 4) | (codeword>>8), output_file);
-	fputc(codeword&0xFF, output_file);
+	fputc(((ctx->nibble&0xF) << 4) | (codeword>>8), ctx->output_file);
+	fputc(codeword&0xFF, ctx->output_file);
 
-	nibble_avail = 0;
+	ctx->nibble_avail = 0;
+
   } else {
 	if(codeword == 0xFFFF) {
-	  fclose(output_file);
-	  init=0;
+	  fclose(ctx->output_file);
 	  return;
 	}
-	fputc(codeword>>4, output_file);
-	nibble = codeword&0xF;
-	nibble_avail = 1;
+	fputc(codeword>>4, ctx->output_file);
+	ctx->nibble = codeword&0xF;
+	ctx->nibble_avail = 1;
   }
-
 }
 
 int main(int argc, char **argv) {
@@ -49,6 +59,9 @@ int main(int argc, char **argv) {
   dictionary_t dict;
   lzw_enc_t encoder;
   char char_input;
+  char output_file_name[]="output.dout";
+  write_to_file_t write_to_file_ctx;
+  
 
   if(argc < 2) {
     printf("Usage.\n");
@@ -61,6 +74,11 @@ int main(int argc, char **argv) {
     printf("Error opening input file %s.\n",argv[1]);
   }
 
+  if(init_write_to_file(&write_to_file_ctx, output_file_name)) {
+	return -1;
+  }
+
+
   if(argc >= 3) {
 	init_dict(&dict,argv[2]);
   } else {
@@ -69,7 +87,7 @@ int main(int argc, char **argv) {
 
   char_input = fgetc(input_file);
   if(char_input != EOF) {
-	init_lzw_encoder(&encoder,char_input,write_to_file);
+	init_lzw_encoder(&encoder,char_input,write_to_file,&write_to_file_ctx);
   }
 
   char_input = fgetc(input_file);
@@ -81,6 +99,6 @@ int main(int argc, char **argv) {
 
   output_last_codeword(&encoder);
 
-  write_to_file(0xFFFF);
+  write_to_file(0xFFFF,&write_to_file_ctx);
   return 0;
 }

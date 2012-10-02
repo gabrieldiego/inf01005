@@ -11,7 +11,8 @@
 
 typedef struct lzw_enc_s {
   uint16_t current_prefix;
-  void (*output_func)(uint16_t);
+  void (*output_func)(uint16_t, void*);
+  void *output_func_ctx;
 } lzw_enc_t;
 
 typedef struct lzw_dec_s {
@@ -24,7 +25,8 @@ typedef struct lzw_dec_s {
 void init_lzw_encoder(
   lzw_enc_t *encoder_ctx,
   char first_char,
-  void (*output_func)(uint16_t)
+  void (*output_func)(uint16_t, void*),
+  void *output_func_ctx
 );
 
 void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char);
