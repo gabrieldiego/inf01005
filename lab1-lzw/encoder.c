@@ -61,7 +61,11 @@ int main(int argc, char **argv) {
     printf("Error opening input file %s.\n",argv[1]);
   }
 
-  init_dict(&dict);
+  if(argc >= 3) {
+	init_dict(&dict,argv[2]);
+  } else {
+	init_dict(&dict,NULL);
+  }
 
   char_input = fgetc(input_file);
   if(char_input != EOF) {

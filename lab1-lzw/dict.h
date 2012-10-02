@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define DICT_MAX_SIZE 4096
 
@@ -17,9 +18,10 @@ typedef struct dictionary_entry_s {
 typedef struct dictionary_s {
   dictionary_entry_t entry[DICT_MAX_SIZE];
   uint16_t size;
+  char *file_name;
 } dictionary_t;
 
-void init_dict(dictionary_t *dict);
+int init_dict(dictionary_t *dict, char *input_dict);
 
 void insert_in_dictionary(
   uint16_t prefix,
