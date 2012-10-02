@@ -26,6 +26,7 @@ void init_lzw_encoder(
   lzw_enc_t *encoder_ctx,
   char first_char,
   void (*output_func)(uint16_t, void*),
+  dictionary_t *dict,
   void *output_func_ctx
 );
 

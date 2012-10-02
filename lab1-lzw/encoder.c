@@ -137,14 +137,15 @@ int main(int argc, char **argv) {
 #endif /* ENCODE_IN_ASCII */
 
   if(argc < 2) {
-    printf("Usage.\n");
-    printf("  %s <input file> [<dictionary file>]\n",argv[0]);
+    fprintf(stderr,"Usage.\n");
+    fprintf(stderr,"  %s <input file> [<dictionary file>] > [report file]\n",argv[0]);
     exit(-1);
   }
 
   input_file = fopen(argv[1],"r");
   if (input_file == NULL) {
-    printf("Error opening input file %s.\n",argv[1]);
+    fprintf(stderr,"Error opening input file %s.\n",argv[1]);
+	return -1;
   }
 
   output_file_name_len = strlen(argv[1])+5;
@@ -172,9 +173,9 @@ int main(int argc, char **argv) {
   char_input = fgetc(input_file);
   if(char_input != EOF) {
 #ifdef ENCODE_IN_ASCII
-	init_lzw_encoder(&encoder,char_input,write_to_file_ascii,&write_to_file_ascii_ctx);
+	init_lzw_encoder(&encoder,char_input,write_to_file_ascii,&dict,&write_to_file_ascii_ctx);
 #else /* ENCODE_IN_ASCII */
-	init_lzw_encoder(&encoder,char_input,write_to_file,&write_to_file_ctx);
+	init_lzw_encoder(&encoder,char_input,write_to_file,&dict,&write_to_file_ctx);
 #endif /* ENCODE_IN_ASCII */
   }
 
@@ -193,7 +194,7 @@ int main(int argc, char **argv) {
   write_to_file(0xFFFF,&write_to_file_ctx);
 #endif /* ENCODE_IN_ASCII */
 
-  //write_dict_to_file(stdout, &dict);
+  write_dict_to_file(stdout, &dict);
 
   return 0;
 }

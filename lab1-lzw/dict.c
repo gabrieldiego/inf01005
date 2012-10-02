@@ -33,6 +33,8 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 	  dict->entry[value].prefix = 0;
 	  dict->entry[value].len = 1;
 	  dict->size = dict->size>value ? dict->size : value+1;
+
+	  printf("Added codeword %c at %d\n",atribute,value);
 	}
 
   } else {
@@ -55,7 +57,7 @@ void insert_in_dictionary(
 ) {
   uint16_t dict_pos = dict->size;
 
-  if(dict->size == DICT_MAX_SIZE) {
+  if(dict->size >= DICT_MAX_SIZE) {
     printf("Dictionary reseted due to oversize.\n");
     init_dict(dict,dict->file_name);
   } else {
@@ -65,6 +67,10 @@ void insert_in_dictionary(
 	/* The resulting length if 1 more of the prefix */
 	dict->size++;
   }
+
+  printf("Added codeword ");
+  write_codeword_to_file_rec(stdout,dict,dict->size-1);
+  printf(" at %d\n",dict->size-1);
 }
 
 uint16_t search_in_dictionary(
@@ -77,17 +83,30 @@ uint16_t search_in_dictionary(
   /* Remember that a prefix entry must always come before the appended one
       Ex: AAB is always before AABB */
 
-  if(prefix+1 == dict->size) return DICT_NOT_FOUND;
+  printf("Looking for %d %c.\n",prefix,append);
+
+  if(prefix+1 >= dict->size) {
+	printf("1Not found %d %c.\n",prefix,append);
+
+	/* It is idiot, but this case must be treated */
+	if(dict->size) {
+	  return 0;
+	}
+	return DICT_NOT_FOUND;
+  }
   /* If the prefix is the last entry in the dictionary, there are no possible
       further entries (see comment above) */
 
-  for(i=prefix+1; i<dict->size; i++) {
-	/* Search starting after the position of the prefix */
+  for(i=prefix; i<dict->size; i++) {
+	/* Search starting at the position of the prefix */
     if((dict->entry[i].prefix == prefix) && (dict->entry[i].append == append)) {
 	  /* If found a matching entry returns the position */
+	  printf("Found %d %c @ %d.\n",prefix,append,i);
 	  return i;
 	}
   }
+
+  printf("2Not found %d %c.\n",prefix,append);
 
   /* If nothing is found returns DICT_NOT_FOUND */
   return DICT_NOT_FOUND;
@@ -101,7 +120,11 @@ void write_codeword_to_file_rec(
   if(dict->entry[entry].len!=1) {
 	write_codeword_to_file_rec(out_file,dict,dict->entry[entry].prefix);
   }
-  fprintf(out_file,"%c",dict->entry[entry].append);
+  if(isprint(dict->entry[entry].append)) {
+	fprintf(out_file,"%c",dict->entry[entry].append);
+  } else {
+	fprintf(out_file,"0x%02X",dict->entry[entry].append);
+  }
 }
 
 void write_dict_to_file(FILE *out_file, dictionary_t *dict) {

@@ -5,9 +5,10 @@ void init_lzw_encoder(
   lzw_enc_t *encoder_ctx,
   char first_char,
   void (*output_func)(uint16_t, void*),
+  dictionary_t *dict,
   void *output_func_ctx
 ) {
-  encoder_ctx->current_prefix = first_char;
+  encoder_ctx->current_prefix = search_in_dictionary(0,first_char,dict);
   encoder_ctx->output_func = output_func;
   encoder_ctx->output_func_ctx = (void *)output_func_ctx;
 }
@@ -29,7 +30,7 @@ void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
 	  encoder_ctx->current_prefix,
 	  encoder_ctx->output_func_ctx
 	);
-	encoder_ctx->current_prefix = input_char;
+	encoder_ctx->current_prefix = search_in_dictionary(0,input_char,dict);
   }
 }
 
