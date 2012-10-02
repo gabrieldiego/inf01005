@@ -1,5 +1,6 @@
 /* Grupo 3: Rafael / Gabriel Teixeira */
 #include <stdio.h>
+#include <string.h>
 #include "lzw.h"
 
 #define ENCODE_IN_ASCII
@@ -127,7 +128,8 @@ int main(int argc, char **argv) {
   dictionary_t dict;
   lzw_enc_t encoder;
   char char_input;
-  char output_file_name[]="output.dout";
+  char *output_file_name;
+  size_t output_file_name_len;
 #ifdef ENCODE_IN_ASCII
   write_to_file_ascii_t write_to_file_ascii_ctx;
 #else /* ENCODE_IN_ASCII */
@@ -144,6 +146,12 @@ int main(int argc, char **argv) {
   if (input_file == NULL) {
     printf("Error opening input file %s.\n",argv[1]);
   }
+
+  output_file_name_len = strlen(argv[1])+5;
+  output_file_name = malloc(output_file_name_len);
+
+  memcpy(output_file_name, argv[1], strchr(argv[1],'.')-argv[1]+1);
+  strcpy(output_file_name+(strchr(argv[1],'.')-argv[1]+1),"dout");
 
 #ifdef ENCODE_IN_ASCII
   if(init_write_to_file_ascii(&write_to_file_ascii_ctx, output_file_name)) {
