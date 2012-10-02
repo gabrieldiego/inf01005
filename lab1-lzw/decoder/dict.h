@@ -14,7 +14,7 @@ int have_dictionary;
 
 
 typedef struct entry_s {
-  char word[100];
+  char *word;
 } entry_t;
 
 typedef struct dictionary_s {
@@ -27,7 +27,7 @@ void init_dict(dictionary_t *dict);
 
 
 void insert_in_dictionary(
-  char word[100],
+  char *word,
   dictionary_t *dict
 );
 

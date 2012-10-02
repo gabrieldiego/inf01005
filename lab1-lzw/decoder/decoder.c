@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
   char char_input, ch;
   int state,i;
   int nrGroup,length,code_aux;
-  char buffer[100], aux[100];
+  char buffer[DICT_MAX_SIZE], aux[DICT_MAX_SIZE];
   dictionary_t dict;
   char *word, *previous_word;
   int first;
@@ -80,9 +80,8 @@ int main(int argc, char **argv) {
   strcat(report_filename,".drel");
   
   
-
   init_dict(&dict);
-
+  
   if(argc == 3) 
   {
     have_dictionary=1;
@@ -91,7 +90,7 @@ int main(int argc, char **argv) {
   }
   else
   {
-    have_dictionary=0;
+    have_dictionary=0; 
     init_dictionary_with_ASCII_table(&dict);
   }
 
@@ -110,16 +109,15 @@ int main(int argc, char **argv) {
   if (output_file == NULL) {
     printf("Error opening coded file output.txt.\n");
   }  
-  
   state=C_GROUP;
   char_input = fgetc(code_file);
   nrGroup=0;
   length=0;
   code_aux=0;
   i=0;  
-  first=1;
+  first=1;   
   while(char_input != EOF) 
-  {
+  { 
     
     if(state==C_GROUP)
     {
@@ -154,7 +152,7 @@ int main(int argc, char **argv) {
 	        {
 		        word=search_in_dictionary(code_aux,&dict);
 		        if(first==1)
-		        {
+		        { 
                     printf("(%s)",word);
                     fprintf(output_file, "%s",word);
 			        first=0;
@@ -170,12 +168,12 @@ int main(int argc, char **argv) {
 			        strcat(aux,previous_word);
 			        strcat(aux, buffer);
 			        insert_in_dictionary(aux,&dict);
-			        //printf("\n>>>>%s\n",aux);
 			        previous_word=word;
 		        }
             }
 	        else
 	        {
+  
 			    buffer[0]=word[0];
 			    buffer[1]='\0';
 			    strcat(previous_word, buffer);
@@ -195,6 +193,7 @@ int main(int argc, char **argv) {
     char_input = fgetc(code_file);
     i++;
   }
+
 
   printf("\ngroup number: %d\n",nrGroup);  
   printf("code length: %d\n",length); 

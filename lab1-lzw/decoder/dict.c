@@ -7,15 +7,19 @@ void init_dict(dictionary_t *dict) {
   int i;
 
   for(i=0; i<DICT_MAX_SIZE; i++) {
-    dict->entry[i].word[0] = '\0';
+    free(dict->entry[i].word);
+    //dict->entry[i].word[0] = '\0';
   }
     dict->size=0;
 }
 
 void insert_in_dictionary(
-  char word[100],
+  char *word,
   dictionary_t *dict
-) {
+) 
+{ 
+    char *new_word;
+    new_word=(char*) malloc(100);
 
   if(dict->size == DICT_MAX_SIZE) {
     printf("Dictionary reseted due to oversize.\n");
@@ -27,10 +31,12 @@ void insert_in_dictionary(
     {
         init_dictionary_with_ASCII_table(dict);
     }
-  } else {
-	strcpy(dict->entry[dict->size].word,word);
-	dict->size++;
-  }
+  } else { 
+	strcpy(new_word,word);
+	dict->entry[dict->size].word=new_word;
+	//dict->entry[dict->size].word=word;
+	dict->size++; 
+  } 
 }
 
 
@@ -75,9 +81,10 @@ void init_dictionary_from_file(
   char buffer[100], aux[100];
   int first=1;
 
+
   init_dict(dict);
 
-  
+
   //input_file = fopen(filename,"r"); //filename_dictionary
   input_file = fopen(filename_dictionary,"r"); //filename_dictionary
   if (input_file == NULL) {
@@ -148,10 +155,22 @@ void init_dictionary_with_ASCII_table(
 )
 {
   int i;
+  char *word;
+  
   init_dict(dict);
+
+
+
   for(i=0; i<256; i++) {
-    dict->entry[i].word[0] = i;
-    dict->entry[i].word[1] = '\0';
+    word=(char*) malloc(2);
+    word[0] = i;
+    word[1] = '\0';
+    
+    dict->entry[i].word = word;
     dict->size++;
   }
+  
+  
 }
+
+
