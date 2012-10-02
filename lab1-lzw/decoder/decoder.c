@@ -3,13 +3,51 @@
 #include <string.h>
 #include <math.h>
 #include "dict.h"
-//#include "report.h" 
+#include "report.h" 
 
 
 
 #define C_GROUP 1
 #define C_LENGTH 2
 #define C_CODES 3
+
+char *filename;
+
+
+
+char *get_filename(char *filename)
+{
+    char *new_filename;
+    int i,length;
+    int toCopy=0;
+    length=strlen(filename);
+    for(i=(length-1);i>=0;i--)
+    {
+        if(toCopy==0)
+        {
+            if(filename[i]=='.')
+            {
+                new_filename=(char*) malloc(i+1);
+                toCopy=1;
+                new_filename[i]='\0';
+                
+            }
+        }
+        else
+        {
+            new_filename[i]=filename[i];
+        }
+        
+    }
+    
+    if(toCopy==0)
+    {
+        new_filename=(char*) malloc(length+1);
+        strcpy(new_filename,filename);
+    }
+    
+    return new_filename;
+}
 
 int main(int argc, char **argv) {
   FILE *output_file,*code_file, *report_file;
@@ -20,6 +58,8 @@ int main(int argc, char **argv) {
   dictionary_t dict;
   char *word, *previous_word;
   int first;
+  
+
 
   if(argc < 2) {
     printf("Usage.\n");
@@ -27,6 +67,19 @@ int main(int argc, char **argv) {
     exit(-1);
   }
 
+    
+    
+  filename=get_filename(argv[1]);
+  
+  printf("filename (%s)\n",filename);
+  
+  strcpy(output_filename,filename);
+  strcat(output_filename,".dout");
+
+  strcpy(report_filename,filename);
+  strcat(report_filename,".drel");
+  
+  
 
   init_dict(&dict);
 
@@ -53,7 +106,7 @@ int main(int argc, char **argv) {
   }
   
   
-  output_file = fopen("output.dout","w");
+  output_file = fopen(output_filename,"w");
   if (output_file == NULL) {
     printf("Error opening coded file output.txt.\n");
   }  

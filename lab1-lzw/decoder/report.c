@@ -8,9 +8,9 @@ void report_generate(char *file_in, char *file_out)
     FILE *report_file;
 
 
-    report_file = fopen("report.drel","w");
+    report_file = fopen(report_filename,"w");
     if (report_file == NULL) {
-        printf("Error creating report file report.drel.\n");
+        printf("Error creating report file %s.\n",report_filename);
         return ;
     }  
 
@@ -18,7 +18,7 @@ void report_generate(char *file_in, char *file_out)
 
     // item 1) os dados dos arquivos de entrada e de saída (nome e tamanho em bytes)
     fprintf(report_file, "Arquivo de entrada: %s\n",file_in);
-    fprintf(report_file, "Arquivo de saída: %s\n","output.dout");
+    fprintf(report_file, "Arquivo de saída: %s\n",output_filename);
 
 
     // item 2) a entropia do alfabeto usado
