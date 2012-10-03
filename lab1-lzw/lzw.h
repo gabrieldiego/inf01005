@@ -34,7 +34,7 @@ void init_lzw_encoder(
 
 void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char);
 
-void output_last_codeword(lzw_enc_t *encoder_ctx);
+void output_last_codeword(lzw_enc_t *encoder_ctx, dictionary_t *dict);
 
 char decode_char(lzw_enc_t *encoder_ctx, dictionary_t *dict);
 

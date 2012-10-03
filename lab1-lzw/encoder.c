@@ -132,10 +132,10 @@ void generate_report(
   fprintf(outfile,"Input file: %s\n",input_file);
   fprintf(outfile,"\n");
   fprintf(outfile,"Input bytes: %d\n",encoder_ctx->input_count);
-  fprintf(outfile,"Output bits: %d\n",encoder_ctx->output_count);
+  fprintf(outfile,"Output bits: %d\n",encoder_ctx->output_count*12);
   fprintf(outfile,"\n");
   fprintf(outfile,"Compression rate %0.2f %%\n",
-		  (100.0*encoder_ctx->output_count)/(encoder_ctx->input_count*12.0));
+	(1200.0*encoder_ctx->output_count)/(encoder_ctx->input_count*8.0));
   fprintf(outfile,"Final dictionary:\n");
   write_dict_to_file(stdout, dict);
 }
@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
 	char_input = fgetc(input_file);
   }
 
-  output_last_codeword(&encoder);
+  output_last_codeword(&encoder,&dict);
 
 #ifdef ENCODE_IN_ASCII
   write_to_file_ascii(0xFFFF,&write_to_file_ascii_ctx);

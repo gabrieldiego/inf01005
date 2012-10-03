@@ -14,6 +14,8 @@ typedef struct dictionary_entry_s {
   size_t len;
   uint16_t prefix; // If len == 1, prefix is -1 (single char)
   uint8_t append;
+  uint32_t input_count;
+  uint32_t output_count;
 } dictionary_entry_t;
 
 typedef struct dictionary_s {

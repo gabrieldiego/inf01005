@@ -13,12 +13,17 @@ void init_lzw_encoder(
   encoder_ctx->output_func = output_func;
   encoder_ctx->output_func_ctx = (void *)output_func_ctx;
 
+  dict->entry[encoder_ctx->current_prefix].input_count++;
+
   encoder_ctx->input_count=1;
   encoder_ctx->output_count=0;
 }
 
 void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
   uint16_t codeword;
+
+  dict->entry[
+	search_in_dictionary(DICT_NULL_PREFIX,input_char,dict)].input_count++;
 
   encoder_ctx->input_count++;
 
@@ -39,7 +44,8 @@ void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
 	  encoder_ctx->output_func_ctx
 	);
 
-	encoder_ctx->output_count+=12;
+	dict->entry[encoder_ctx->current_prefix].output_count++;
+	encoder_ctx->output_count+=1;
 
 	encoder_ctx->current_prefix =
 	  search_in_dictionary(DICT_NULL_PREFIX,input_char,dict);
@@ -47,12 +53,13 @@ void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
   }
 }
 
-void output_last_codeword(lzw_enc_t *encoder_ctx) {
+void output_last_codeword(lzw_enc_t *encoder_ctx, dictionary_t *dict) {
   encoder_ctx->output_func(
     encoder_ctx->current_prefix,
     encoder_ctx->output_func_ctx
   );
-  encoder_ctx->output_count+=12;
+  dict->entry[encoder_ctx->current_prefix].output_count++;
+  encoder_ctx->output_count+=1;
 }
 
 /* Clear dictionary once it is full */

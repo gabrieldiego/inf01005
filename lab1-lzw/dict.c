@@ -26,12 +26,16 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 		  dict->entry[i].append = 0;
 		  dict->entry[i].prefix = DICT_NULL_PREFIX;
 		  dict->entry[i].len = 1;
+		  dict->entry[i].output_count = 0;
+		  dict->entry[i].input_count = 0;
 		  dict->size = value+1;
 		}
 	  }
 	  dict->entry[value].append = atribute;
 	  dict->entry[value].prefix = DICT_NULL_PREFIX;
 	  dict->entry[value].len = 1;
+	  dict->entry[value].output_count = 0;
+	  dict->entry[value].input_count = 0;
 	  dict->size = dict->size>value ? dict->size : value+1;
 
 	}
@@ -42,6 +46,8 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 	  dict->entry[i].append = i;
 	  dict->entry[i].prefix = DICT_NULL_PREFIX;
 	  dict->entry[i].len = 1;
+	  dict->entry[i].output_count = 0;
+	  dict->entry[i].input_count = 0;
 	}
 	dict->size = 256;
   }
@@ -63,6 +69,9 @@ void insert_in_dictionary(
 	dict->entry[dict_pos].append = append;
 	dict->entry[dict_pos].prefix = prefix;
 	dict->entry[dict_pos].len = dict->entry[prefix].len+1;
+	dict->entry[dict_pos].output_count = 0;
+	dict->entry[dict_pos].input_count = 0;
+
 	/* The resulting length if 1 more of the prefix */
 	dict->size++;
   }
@@ -122,5 +131,7 @@ void write_dict_to_file(FILE *out_file, dictionary_t *dict) {
   for(i=0;i<dict->size;i++) {
 	write_codeword_to_file_rec(out_file,dict,i);
 	fprintf(out_file,":%d\n",i);
+//	fprintf(out_file,"Count I:%d O:%d\n",
+//			dict->entry[i].input_count,dict->entry[i].output_count);
   }
 }
