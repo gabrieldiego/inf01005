@@ -8,10 +8,11 @@
 #define DICT_MAX_SIZE 4096
 
 #define DICT_NOT_FOUND 0xFFFF
+#define DICT_NULL_PREFIX 0xFFFE
 
 typedef struct dictionary_entry_s {
   size_t len;
-  uint16_t prefix; // If len == 1, prefix is void (single char)
+  uint16_t prefix; // If len == 1, prefix is -1 (single char)
   uint8_t append;
 } dictionary_entry_t;
 

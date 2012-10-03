@@ -24,24 +24,23 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 		for(i=dict->size;i<value;i++) {
 		  /* It is adding a character past the dict size, reset entries before */
 		  dict->entry[i].append = 0;
-		  dict->entry[i].prefix = 0;
+		  dict->entry[i].prefix = DICT_NULL_PREFIX;
 		  dict->entry[i].len = 1;
 		  dict->size = value+1;
 		}
 	  }
 	  dict->entry[value].append = atribute;
-	  dict->entry[value].prefix = 0;
+	  dict->entry[value].prefix = DICT_NULL_PREFIX;
 	  dict->entry[value].len = 1;
 	  dict->size = dict->size>value ? dict->size : value+1;
 
-	  printf("Added codeword %c at %d\n",atribute,value);
 	}
 
   } else {
 	/* If there is no input dictionary, use ASCII table as input */
 	for(i=0; i<256; i++) {
 	  dict->entry[i].append = i;
-	  dict->entry[i].prefix = 0;
+	  dict->entry[i].prefix = DICT_NULL_PREFIX;
 	  dict->entry[i].len = 1;
 	}
 	dict->size = 256;
@@ -68,9 +67,6 @@ void insert_in_dictionary(
 	dict->size++;
   }
 
-  printf("Added codeword ");
-  write_codeword_to_file_rec(stdout,dict,dict->size-1);
-  printf(" at %d\n",dict->size-1);
 }
 
 uint16_t search_in_dictionary(
@@ -83,30 +79,24 @@ uint16_t search_in_dictionary(
   /* Remember that a prefix entry must always come before the appended one
       Ex: AAB is always before AABB */
 
-  printf("Looking for %d %c.\n",prefix,append);
-
-  if(prefix+1 >= dict->size) {
-	printf("1Not found %d %c.\n",prefix,append);
-
+  if(prefix != DICT_NULL_PREFIX && prefix >= dict->size) {
 	/* It is idiot, but this case must be treated */
-	if(dict->size) {
+	if(dict->size == 1) {
 	  return 0;
 	}
+
 	return DICT_NOT_FOUND;
   }
   /* If the prefix is the last entry in the dictionary, there are no possible
       further entries (see comment above) */
 
-  for(i=prefix; i<dict->size; i++) {
+  for(i=0; i<dict->size; i++) {
 	/* Search starting at the position of the prefix */
     if((dict->entry[i].prefix == prefix) && (dict->entry[i].append == append)) {
 	  /* If found a matching entry returns the position */
-	  printf("Found %d %c @ %d.\n",prefix,append,i);
 	  return i;
 	}
   }
-
-  printf("2Not found %d %c.\n",prefix,append);
 
   /* If nothing is found returns DICT_NOT_FOUND */
   return DICT_NOT_FOUND;

@@ -8,7 +8,8 @@ void init_lzw_encoder(
   dictionary_t *dict,
   void *output_func_ctx
 ) {
-  encoder_ctx->current_prefix = search_in_dictionary(0,first_char,dict);
+  encoder_ctx->current_prefix =
+    search_in_dictionary(DICT_NULL_PREFIX,first_char,dict);
   encoder_ctx->output_func = output_func;
   encoder_ctx->output_func_ctx = (void *)output_func_ctx;
 }
@@ -25,12 +26,17 @@ void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
   } else {
 	/* If not found, add it to the dictionary. Remember that at this point the
 	    dictionary may be resetted, but this changes nothing */
+
 	insert_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
+
 	encoder_ctx->output_func(
 	  encoder_ctx->current_prefix,
 	  encoder_ctx->output_func_ctx
 	);
-	encoder_ctx->current_prefix = search_in_dictionary(0,input_char,dict);
+
+	encoder_ctx->current_prefix =
+	  search_in_dictionary(DICT_NULL_PREFIX,input_char,dict);
+
   }
 }
 
