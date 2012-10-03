@@ -13,6 +13,8 @@ typedef struct lzw_enc_s {
   uint16_t current_prefix;
   void (*output_func)(uint16_t, void*);
   void *output_func_ctx;
+  uint32_t input_count;
+  uint32_t output_count;
 } lzw_enc_t;
 
 typedef struct lzw_dec_s {

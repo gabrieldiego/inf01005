@@ -12,10 +12,15 @@ void init_lzw_encoder(
     search_in_dictionary(DICT_NULL_PREFIX,first_char,dict);
   encoder_ctx->output_func = output_func;
   encoder_ctx->output_func_ctx = (void *)output_func_ctx;
+
+  encoder_ctx->input_count=1;
+  encoder_ctx->output_count=0;
 }
 
 void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
   uint16_t codeword;
+
+  encoder_ctx->input_count++;
 
   /* Search the dict for the current prefix + input_char */
   codeword = search_in_dictionary(encoder_ctx->current_prefix,input_char,dict);
@@ -34,6 +39,8 @@ void insert_char(lzw_enc_t *encoder_ctx, dictionary_t *dict, char input_char) {
 	  encoder_ctx->output_func_ctx
 	);
 
+	encoder_ctx->output_count+=12;
+
 	encoder_ctx->current_prefix =
 	  search_in_dictionary(DICT_NULL_PREFIX,input_char,dict);
 
@@ -45,6 +52,7 @@ void output_last_codeword(lzw_enc_t *encoder_ctx) {
     encoder_ctx->current_prefix,
     encoder_ctx->output_func_ctx
   );
+  encoder_ctx->output_count+=12;
 }
 
 /* Clear dictionary once it is full */

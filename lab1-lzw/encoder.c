@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lzw.h"
 
-#define ENCODE_IN_ASCII
+//#define ENCODE_IN_ASCII
 
 void print_output_codeword(uint16_t codeword) {
   printf("Output codeword: 0x%04X\n",codeword);
@@ -123,6 +123,23 @@ void write_to_file_ascii(uint16_t codeword, void *ptr) {
 
 }
 
+void generate_report(
+  FILE *outfile,
+  lzw_enc_t *encoder_ctx, dictionary_t *dict, char * input_file
+) {
+  fprintf(outfile,"Report of the encoding:\n");
+  fprintf(outfile,"\n");
+  fprintf(outfile,"Input file: %s\n",input_file);
+  fprintf(outfile,"\n");
+  fprintf(outfile,"Input bytes: %d\n",encoder_ctx->input_count);
+  fprintf(outfile,"Output bits: %d\n",encoder_ctx->output_count);
+  fprintf(outfile,"\n");
+  fprintf(outfile,"Compression rate %0.2f %%\n",
+		  (100.0*encoder_ctx->output_count)/(encoder_ctx->input_count*12.0));
+  fprintf(outfile,"Final dictionary:\n");
+  write_dict_to_file(stdout, dict);
+}
+
 int main(int argc, char **argv) {
   FILE *input_file;
   dictionary_t dict;
@@ -194,7 +211,7 @@ int main(int argc, char **argv) {
   write_to_file(0xFFFF,&write_to_file_ctx);
 #endif /* ENCODE_IN_ASCII */
 
-  write_dict_to_file(stdout, &dict);
+  generate_report(stdout, &encoder, &dict, argv[1]);
 
   return 0;
 }
