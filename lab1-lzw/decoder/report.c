@@ -9,6 +9,7 @@ void report_generate(char *file_in, char *file_out)
     float cont_in, cont_out;
     float length_in, length_out, compactacao;
     char char_input;
+    double entropia, q_media;
 
 
     report_file = fopen(report_filename,"w");
@@ -60,10 +61,16 @@ void report_generate(char *file_in, char *file_out)
 
 
     // item 2) a entropia do alfabeto usado
-
+    entropia=0;
+    entropia=(-log2(cont_0/(cont_0+cont_1))*cont_0)+(-log2(cont_1/(cont_0+cont_1))*cont_1);
+    
+    printf("Entropia do alfabeto: %.3f \n",entropia);
+    
 
     // item 3) a quantidade média de informação recebida por símbolo da mensagem (nesse caso, a mensagem é todo o arquivo de entrada)
-
+    q_media=entropia/(cont_0+cont_1);
+    
+    printf("Quantidade média de informação recebida por símbolo: %.3f \n",q_media);
 
     // item 4) o percentual de compactação do arquivo codificado de entrada em relação ao original
 

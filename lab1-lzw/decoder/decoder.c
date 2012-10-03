@@ -117,10 +117,16 @@ int main(int argc, char **argv) {
   length=0;
   code_aux=0;
   i=0;  
-  first=1;   
+  first=1;
+  cont_0=0;
+  cont_1=0;
   while(char_input != EOF) 
   { 
-    
+    if(char_input=='1')
+        cont_1++;
+    else
+        cont_0++;
+        
     if(state==C_GROUP)
     {
         if(char_input=='1')
