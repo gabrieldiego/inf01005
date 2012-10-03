@@ -52,6 +52,8 @@ int init_dict(dictionary_t *dict, char *input_dict) {
 	dict->size = 256;
   }
 
+  dict->initial_size = dict->size;
+
   return 0;
 }
 

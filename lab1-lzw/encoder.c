@@ -1,6 +1,7 @@
 /* Grupo 3: Rafael / Gabriel Teixeira */
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "lzw.h"
 
 //#define ENCODE_IN_ASCII
@@ -127,6 +128,9 @@ void generate_report(
   FILE *outfile,
   lzw_enc_t *encoder_ctx, dictionary_t *dict, char * input_file
 ) {
+  int i;
+  double ave,entropy;
+
   fprintf(outfile,"Report of the encoding:\n");
   fprintf(outfile,"\n");
   fprintf(outfile,"Input file: %s\n",input_file);
@@ -138,6 +142,31 @@ void generate_report(
 	(1200.0*encoder_ctx->output_count)/(encoder_ctx->input_count*8.0));
   fprintf(outfile,"Final dictionary:\n");
   write_dict_to_file(stdout, dict);
+
+  entropy = 0;
+  for(i=0;i<dict->initial_size;i++) {
+	float ave_bits;
+	if(dict->entry[i].output_count) {
+	  ave_bits = (dict->entry[i].input_count*1.0)/encoder_ctx->input_count;
+	  ave_bits = -log2(ave_bits);
+	  fprintf(outfile,"Average entropy for symbol %c: %0.2f bits\n",
+			  dict->entry[i].append,ave_bits);
+	  entropy += ave_bits*dict->entry[i].input_count;
+	}
+  }
+  fprintf(outfile,"Entropy of the input message: %0.2f bits\n",entropy);
+
+  for(i=0;i<dict->size;i++) {
+	float ave_bits;
+	if(dict->entry[i].output_count) {
+	  ave_bits = (dict->entry[i].output_count*1.0)/encoder_ctx->output_count;
+	  ave_bits = -log2(ave_bits);
+	  fprintf(outfile,"Average entropy for codeword %d: %0.2f bits\n",i,ave_bits);
+	  entropy += ave_bits*dict->entry[i].output_count;
+	}
+  }
+  fprintf(outfile,"Entropy of the output message: %0.2f bits\n",entropy);
+
 }
 
 int main(int argc, char **argv) {

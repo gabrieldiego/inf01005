@@ -21,6 +21,7 @@ typedef struct dictionary_entry_s {
 typedef struct dictionary_s {
   dictionary_entry_t entry[DICT_MAX_SIZE];
   uint16_t size;
+  uint32_t initial_size;
   char *file_name;
 } dictionary_t;
 

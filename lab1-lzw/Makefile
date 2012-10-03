@@ -9,7 +9,7 @@ OBJ_DEC=$(subst .c,.o,$(SRC_DEC))
 all: encoder decoder
 
 encoder: $(OBJ_ENC)
-	$(CC) -o encoder $^
+	$(CC) -o encoder $^ -lm
 
 decoder: $(OBJ_DEC)
 	$(CC) -o decoder $^
